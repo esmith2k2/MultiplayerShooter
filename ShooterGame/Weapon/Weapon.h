@@ -25,6 +25,7 @@ class SHOOTERGAME_API AWeapon : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AWeapon();
+	void ShowPickupWidget(bool bShowWidget);
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,6 +39,14 @@ protected:
 		int32 OtherBodyIndex, 
 		bool bFromSweep, 
 		const FHitResult& SweepResult
+	);
+
+	UFUNCTION()
+	void OnSphereEndOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent,
+		int32 OtherBodyIndex
 	);
 
 private:

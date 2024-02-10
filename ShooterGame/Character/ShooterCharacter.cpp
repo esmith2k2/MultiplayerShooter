@@ -6,6 +6,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "ShooterGame/Weapon/Weapon.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -40,9 +42,15 @@ void AShooterCharacter::BeginPlay()
 void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
+void AShooterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const 
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AShooterCharacter, OverlappingWeapon, COND_OwnerOnly);
+
+}
 
 void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -56,6 +64,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("LookUp", this, &AShooterCharacter::LookUp);
 
 }
+
 
 void AShooterCharacter::MoveForward(float Value) 
 {
@@ -86,3 +95,33 @@ void AShooterCharacter::LookUp(float Value)
 {
 	AddControllerPitchInput(Value);
 }
+
+void AShooterCharacter::SetOverlappingWeapon(AWeapon* Weapon) 
+{
+	if(OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget(false);
+	}
+
+	OverlappingWeapon = Weapon;
+
+	if(IsLocallyControlled())
+	{
+		if(OverlappingWeapon)
+		{
+			OverlappingWeapon->ShowPickupWidget(true);
+		}
+	}
+}
+void AShooterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon) 
+{
+	if(OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickupWidget(true);
+	}
+	if(LastWeapon)
+	{
+		LastWeapon->ShowPickupWidget(false);
+	}
+}
+
