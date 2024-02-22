@@ -26,7 +26,7 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 	void ShowPickupWidget(bool bShowWidget);
-
+	virtual void Tick(float DeltaTime) override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -63,7 +63,6 @@ private:
 	class UWidgetComponent* PickupWidget;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; }
 
 };
