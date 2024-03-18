@@ -96,7 +96,7 @@ void AWeapon::OnRep_WeaponState()
 	}
 }
 
-FORCEINLINE void AWeapon::SetWeaponState(EWeaponState State) 
+void AWeapon::SetWeaponState(EWeaponState State) 
 {
 	WeaponState = State;
 	switch(WeaponState)
