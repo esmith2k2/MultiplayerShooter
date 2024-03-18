@@ -153,6 +153,8 @@ void AShooterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 		}
 	}
 }
+
+
 void AShooterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon) 
 {
 	if(OverlappingWeapon)
@@ -165,4 +167,7 @@ void AShooterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 	}
 }
 
-
+bool AShooterCharacter::IsWeaponEquipped() 
+{
+	return (Combat && Combat->EquippedWeapon);
+}

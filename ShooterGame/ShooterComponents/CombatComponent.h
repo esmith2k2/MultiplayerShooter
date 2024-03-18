@@ -13,9 +13,11 @@ class SHOOTERGAME_API UCombatComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
+	UCombatComponent();
 	friend class AShooterCharacter;	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	UCombatComponent();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const override;
+	
 
 	void EquipWeapon(class AWeapon* WeaponToEquip);
 
@@ -24,6 +26,8 @@ protected:
 
 private:
 	class AShooterCharacter* Character;
+
+	UPROPERTY(Replicated)
 	AWeapon* EquippedWeapon;
 
 public:	
