@@ -43,7 +43,18 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
     //Offset yaw for strafing
     FRotator AimRotation = ShooterCharacter->GetBaseAimRotation();
     FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(ShooterCharacter->GetVelocity());
-    YawOffset = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
+    FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation);
+    DeltaRotation = FMath::RInterpTo(DeltaRotation, DeltaRot, GetDeltaSeconds(), 6.f);
+    YawOffset = DeltaRotation.Yaw;
+
+    //Lean
+    CharacterRotationLastFrame = CharacterRotation;
+    CharacterRotation = ShooterCharacter->GetActorRotation();
+    const FRotator Delta = UKismetMathLibrary::NormalizedDeltaRotator(CharacterRotation, CharacterRotationLastFrame);
+    const float Target = Delta.Yaw / GetDeltaSeconds();
+    const float Interp = FMath::FInterpTo(Lean, Target, GetDeltaSeconds(), 6.f);
+    Lean = FMath::Clamp(Interp, -90.f, 90.f);
+
    
     
 }
