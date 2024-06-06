@@ -4,6 +4,7 @@
 #include "ShooterAnimInstance.h"
 #include "ShooterCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 void UShooterAnimInstance::NativeInitializeAnimation() 
@@ -38,4 +39,11 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
     bIsCrouched = ShooterCharacter->bIsCrouched;
 
     bAiming = ShooterCharacter->IsAiming();
+
+    //Offset yaw for strafing
+    FRotator AimRotation = ShooterCharacter->GetBaseAimRotation();
+    FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(ShooterCharacter->GetVelocity());
+    YawOffset = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
+   
+    
 }
