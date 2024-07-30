@@ -10,6 +10,7 @@
 #include "ShooterGame/Weapon/Weapon.h"
 #include "ShooterGame/ShooterComponents/CombatComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -51,6 +52,8 @@ void AShooterCharacter::BeginPlay()
 void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AimOffset(DeltaTime);
 }
 
 void AShooterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const 
@@ -174,6 +177,40 @@ void AShooterCharacter::AimButtonReleased()
 	}
 }
 
+void AShooterCharacter::AimOffset(float DeltaTime) 
+{
+	if(Combat && Combat->EquippedWeapon == nullptr) return;
+
+	FVector Velocity = GetVelocity();
+    Velocity.Z = 0.f;
+    float Speed = Velocity.Size();
+	bool bIsInAir = GetCharacterMovement()->IsFalling();
+
+	if(Speed == 0.f && !bIsInAir)  // Standing still, not in air. 
+	{
+		FRotator CurrentAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
+		AO_Yaw = DeltaAimRotation.Yaw;
+		bUseControllerRotationYaw = false;
+	}
+
+	if(Speed > 0.f || bIsInAir) // Running or in air. 
+	{
+		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		AO_Yaw = 0.f;
+		bUseControllerRotationYaw = true;
+	}
+
+	AO_Pitch = GetBaseAimRotation().Pitch;
+	if(AO_Pitch > 90.f && !IsLocallyControlled())
+	{
+		// Map pitch from the [270-360) -> [-90-0)
+		FVector2D InRange(270.f, 360.f);
+		FVector2D OutRange(-90.f, 0.f);
+		AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
+	}
+}
+
 void AShooterCharacter::SetOverlappingWeapon(AWeapon* Weapon) 
 {
 	if(OverlappingWeapon)
@@ -213,4 +250,10 @@ bool AShooterCharacter::IsWeaponEquipped()
 bool AShooterCharacter::IsAiming() 
 {
 	return (Combat && Combat->bAiming);
+}
+
+AWeapon* AShooterCharacter::GetEquippedWeapon() 
+{
+	if(Combat == nullptr) return nullptr;
+	return Combat->EquippedWeapon;
 }
