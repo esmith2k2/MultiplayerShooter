@@ -234,10 +234,6 @@ void AShooterCharacter::Jump()
 	{
 		Super::Jump();
 	}
-	
-	
-	
-
 
 }
 
