@@ -6,6 +6,8 @@
 #include "Components/WidgetComponent.h"
 #include "ShooterGame/Character/ShooterCharacter.h"
 #include "Net/UnrealNetwork.h"
+#include "Animation/AnimationAsset.h"
+#include "Components/SkeletalMeshComponent.h"
 
 
 // Sets default values
@@ -66,6 +68,15 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeP
 
 	DOREPLIFETIME(AWeapon, WeaponState);
 }
+
+void AWeapon::Fire() 
+{
+	if(FireAnimation)
+	{
+		WeaponMesh->PlayAnimation(FireAnimation, false);
+	}
+}
+
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex,  bool bFromSweep,  const FHitResult& SweepResult) 
 {
 	AShooterCharacter* ShooterCharacter = Cast<AShooterCharacter>(OtherActor);

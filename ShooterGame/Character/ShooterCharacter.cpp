@@ -11,6 +11,7 @@
 #include "ShooterGame/ShooterComponents/CombatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "ShooterAnimInstance.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -99,6 +100,26 @@ void AShooterCharacter::PostInitializeComponents()
 	{
 		Combat->Character = this;
 	}
+}
+
+void AShooterCharacter::PlayFireMontage(bool bAiming) 
+{
+	if(Combat == nullptr || Combat->EquippedWeapon == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance && FireWeaponMontage)
+	{
+		AnimInstance->Montage_Play(FireWeaponMontage);
+		FName SectionName;
+		SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
+		AnimInstance->Montage_JumpToSection(SectionName);
+
+
+	}
+
 }
 
 void AShooterCharacter::MoveForward(float Value) 
@@ -242,11 +263,19 @@ void AShooterCharacter::Jump()
 void AShooterCharacter::FireButtonPressed() 
 {
 	UE_LOG(LogTemp, Warning, TEXT("Fire button pressed!"));
+	if(Combat)
+	{
+		Combat->FireButtonPressed(true);
+	}
 }
 
 void AShooterCharacter::FireButtonReleased() 
 {
 	UE_LOG(LogTemp, Warning, TEXT("Fire button released!"));
+	if(Combat)
+	{
+		Combat->FireButtonPressed(false);
+	}
 }
 
 void AShooterCharacter::TurnInPlace(float DeltaTime) 

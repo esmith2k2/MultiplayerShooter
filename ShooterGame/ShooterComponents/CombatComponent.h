@@ -33,6 +33,8 @@ protected:
 
 	void FireButtonPressed(bool bPressed);
 
+	bool bFireButtonPressed;
+
 private:
 	class AShooterCharacter* Character;
 
