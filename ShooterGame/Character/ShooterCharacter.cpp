@@ -80,6 +80,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AShooterCharacter::CrouchButtonPressed);
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AShooterCharacter::AimButtonPressed);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AShooterCharacter::AimButtonReleased);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AShooterCharacter::FireButtonPressed);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AShooterCharacter::FireButtonReleased);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AShooterCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AShooterCharacter::MoveRight);
@@ -237,9 +239,19 @@ void AShooterCharacter::Jump()
 
 }
 
+void AShooterCharacter::FireButtonPressed() 
+{
+	UE_LOG(LogTemp, Warning, TEXT("Fire button pressed!"));
+}
+
+void AShooterCharacter::FireButtonReleased() 
+{
+	UE_LOG(LogTemp, Warning, TEXT("Fire button released!"));
+}
+
 void AShooterCharacter::TurnInPlace(float DeltaTime) 
 {
-	UE_LOG(LogTemp, Warning, TEXT("AO_Yaw: %f"), AO_Yaw);
+	//UE_LOG(LogTemp, Warning, TEXT("AO_Yaw: %f"), AO_Yaw);
 	if(AO_Yaw >= 90)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Right;
