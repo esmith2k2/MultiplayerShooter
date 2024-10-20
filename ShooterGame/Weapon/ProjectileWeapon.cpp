@@ -9,13 +9,14 @@
 void AProjectileWeapon::Fire(const FVector &HitTarget) 
 {
     Super::Fire(HitTarget);
-    APawn* InstigatorPawn = Cast<APawn>(GetOwner());
 
+    if(!HasAuthority()) return;
+    APawn* InstigatorPawn = Cast<APawn>(GetOwner());
     const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
     if(MuzzleFlashSocket)
     {
         FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
-
+        // Vector of the target location that the player is aiming at.
         FVector ToTarget = HitTarget - SocketTransform.GetLocation();
         FRotator TargetRotation = ToTarget.Rotation();
         if(ProjectileClass)
