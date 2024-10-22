@@ -19,7 +19,7 @@ void AProjectileWeapon::Fire(const FVector &HitTarget)
         // Vector of the target location that the player is aiming at.
         FVector ToTarget = HitTarget - SocketTransform.GetLocation();
         FRotator TargetRotation = ToTarget.Rotation();
-        if(ProjectileClass)
+        if(ProjectileClass && InstigatorPawn)
         {
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = GetOwner();
