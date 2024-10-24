@@ -10,6 +10,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "ShooterGame/PlayerController/ShooterPlayerController.h"
+#include "ShooterGame/HUD/ShooterHUD.h"
 
 
 UCombatComponent::UCombatComponent()
@@ -37,6 +39,49 @@ void UCombatComponent::BeginPlay()
 	if(Character)
 	{
 		Character->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	}
+
+}
+
+void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	SetHUDCrosshairs(DeltaTime);
+
+}
+
+void UCombatComponent::SetHUDCrosshairs(float DeltaTime) 
+{
+	if(Character == nullptr || Character->Controller == nullptr) return;
+
+	Controller = Controller == nullptr ? Cast<AShooterPlayerController>(Character->Controller) : Controller;
+
+	if(Controller)
+	{
+		HUD = HUD == nullptr ? Cast<AShooterHUD>(Controller->GetHUD()) : HUD;
+
+		if(HUD)
+		{
+			FHUDPackage HUDPackage;
+			if(EquippedWeapon)
+			{
+				HUDPackage.CrosshairsCenter = EquippedWeapon->CrosshairsCenter;
+				HUDPackage.CrosshairsLeft = EquippedWeapon->CrosshairsLeft;
+				HUDPackage.CrosshairsRight = EquippedWeapon->CrosshairsRight;
+				HUDPackage.CrosshairsTop = EquippedWeapon->CrosshairsTop;
+				HUDPackage.CrosshairsBottom = EquippedWeapon->CrosshairsBottom;
+			}
+			else
+			{
+				HUDPackage.CrosshairsCenter = EquippedWeapon->CrosshairsCenter;
+				HUDPackage.CrosshairsLeft = nullptr;
+				HUDPackage.CrosshairsRight = nullptr;
+				HUDPackage.CrosshairsTop = nullptr;
+				HUDPackage.CrosshairsBottom = nullptr;
+			}
+			HUD->SetHUDPackage(HUDPackage);
+		}
 	}
 
 }
@@ -111,7 +156,6 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 
 }
 
-
 void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget) 
 {
 	MulticastFire(TraceHitTarget);
@@ -125,14 +169,6 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
 		Character->PlayFireMontage(bAiming);
 		EquippedWeapon->Fire(TraceHitTarget);
 	}
-}
-
-void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	
-
 }
 
 void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip) 
