@@ -75,6 +75,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	float CrosshairAimingFactor;
 
+	FVector HitTarget;
+
 public:	
 
 
