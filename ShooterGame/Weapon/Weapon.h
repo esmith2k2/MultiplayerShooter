@@ -92,12 +92,9 @@ private:
 	TSubclassOf<class ABulletCasing> BulletCasingClass;
 
 
-
 public:	
 	void SetWeaponState(EWeaponState State);
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
-
-
 
 };
