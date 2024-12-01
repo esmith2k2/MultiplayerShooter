@@ -112,20 +112,22 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 			}
 			else
 			{
-				CrosshairInAirFactor = FMath::FInterpTo(CrosshairInAirFactor, 0.f, DeltaTime, 30.f);
+				CrosshairInAirFactor = FMath::FInterpTo(CrosshairInAirFactor, 0.f, DeltaTime, 5.f);
 			}
 
-			if(Character->IsAiming())
+			if(bAiming)
 			{
-				CrosshairAimingFactor = FMath::FInterpTo(CrosshairAimingFactor, 0.1f, DeltaTime, 30.f);
+				CrosshairAimingFactor = FMath::FInterpTo(CrosshairAimingFactor, 0.2f, DeltaTime, 15.f);
 			}
 			else
 			{
 				CrosshairAimingFactor = FMath::FInterpTo(CrosshairAimingFactor, 1.f, DeltaTime, 10.f);
 			}
 
+			CrosshairShootingFactor = FMath::FInterpTo(CrosshairShootingFactor, 0.f, DeltaTime, 6.f);
 
-			HUDPackage.CrosshairSpread = (CrosshairVelocityFactor + CrosshairInAirFactor) * CrosshairAimingFactor;
+
+			HUDPackage.CrosshairSpread = ((CrosshairVelocityFactor + CrosshairInAirFactor) * CrosshairAimingFactor) + CrosshairShootingFactor;
 
 			HUD->SetHUDPackage(HUDPackage);
 		}
@@ -190,6 +192,11 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 		FHitResult HitResult;
 		TraceUnderCrosshairs(HitResult);
 		ServerFire(HitResult.ImpactPoint);
+
+		if(EquippedWeapon)
+		{
+			CrosshairShootingFactor = 2.f;
+		}
 	} 
 	
 }
