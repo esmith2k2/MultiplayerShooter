@@ -40,7 +40,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	class UCameraComponent* FollowCamera;
+	class UCameraComponent* CharacterCamera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* OverheadWidget;
@@ -80,5 +80,7 @@ public:
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 
 	FVector GetHitTarget() const; 
+
+	FORCEINLINE UCameraComponent* GetCharacterCamera() const { return CharacterCamera; }
 
 };
