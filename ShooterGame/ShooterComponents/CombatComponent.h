@@ -81,6 +81,8 @@ private:
 
 	FVector HitTarget;
 
+	FVector AimEndLocation;
+
 	FHUDPackage HUDPackage;
 
 
@@ -103,6 +105,7 @@ private:
 
 public:	
 
+	FORCEINLINE FVector GetAimEndLocation() { return AimEndLocation; }
 
 		
 };

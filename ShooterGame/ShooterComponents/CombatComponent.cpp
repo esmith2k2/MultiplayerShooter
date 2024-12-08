@@ -216,7 +216,13 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 	if(bScreenToWorld)
 	{
 		FVector Start = CrosshairWorldPosition;
+
+
+
+
+
 		FVector End = Start + CrosshairWorldDirection * TRACE_LENGTH;
+		AimEndLocation = End;
 
 		GetWorld()->LineTraceSingleByChannel(TraceHitResult, Start, End, ECollisionChannel::ECC_Visibility);
 		if(!TraceHitResult.bBlockingHit)

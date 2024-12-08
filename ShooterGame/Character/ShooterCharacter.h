@@ -83,5 +83,6 @@ public:
 	FVector GetHitTarget() const; 
 
 	FORCEINLINE UCameraComponent* GetCharacterCamera() const { return CharacterCamera; }
+	FORCEINLINE UCombatComponent* GetCombatComponent() { return Combat; }
 
 };
