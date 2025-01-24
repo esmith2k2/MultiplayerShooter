@@ -46,6 +46,8 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
     TurningInPlace = ShooterCharacter->GetTurningInPlace();
 
+    bRotateRootBone = ShooterCharacter->ShouldRotateRootBone();
+
     //Offset yaw for strafing
     FRotator AimRotation = ShooterCharacter->GetBaseAimRotation();
     FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(ShooterCharacter->GetVelocity());
