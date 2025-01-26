@@ -21,6 +21,9 @@ public:
 	virtual void PostInitializeComponents() override;
 	void PlayFireMontage(bool bAiming);
 
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	class UTexture2D* CrosshairsCenter;
+
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastHit();

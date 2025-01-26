@@ -60,6 +60,16 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float UnZoomInterpSpeed = 20.f;
+	
+	/*
+	* Automatic Fire
+	*/
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float FireDelay = .1f;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	bool bAutomatic = true;
 
 protected:
 	// Called when the game starts or when spawned

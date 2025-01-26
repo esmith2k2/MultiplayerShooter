@@ -12,6 +12,7 @@
 #include "DrawDebugHelpers.h"
 #include "ShooterGame/PlayerController/ShooterPlayerController.h"
 #include "Camera/CameraComponent.h"
+#include "TimerManager.h"
 
 
 UCombatComponent::UCombatComponent()
@@ -67,6 +68,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 }
 
+
 void UCombatComponent::SetHUDCrosshairs(float DeltaTime) 
 {
 	if(Character == nullptr || Character->Controller == nullptr) return;
@@ -89,7 +91,7 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 			}
 			else
 			{
-				HUDPackage.CrosshairsCenter = nullptr;
+				HUDPackage.CrosshairsCenter = Character->CrosshairsCenter;
 				HUDPackage.CrosshairsLeft = nullptr;
 				HUDPackage.CrosshairsRight = nullptr;
 				HUDPackage.CrosshairsTop = nullptr;
@@ -172,33 +174,6 @@ void UCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 	}
 }
 
-void UCombatComponent::OnRep_EquippedWeapon() 
-{
-	if(EquippedWeapon && Character)
-	{
-		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
-		Character->bUseControllerRotationYaw = true;
-	}
-}
-
-void UCombatComponent::FireButtonPressed(bool bPressed) 
-{
-	bFireButtonPressed = bPressed;
-
-	if(bFireButtonPressed)
-	{
-		FHitResult HitResult;
-		TraceUnderCrosshairs(HitResult);
-		ServerFire(HitResult.ImpactPoint);
-
-		if(EquippedWeapon)
-		{
-			CrosshairShootingFactor = 2.f;
-		}
-	} 
-	
-}
-
 void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult) 
 {
 	FVector2D ViewportSize;
@@ -248,6 +223,54 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 
 }
 
+
+void UCombatComponent::FireButtonPressed(bool bPressed) 
+{
+	bFireButtonPressed = bPressed;
+
+	if(bFireButtonPressed)
+	{
+
+		Fire();
+	} 
+	
+}
+
+void UCombatComponent::Fire() 
+{
+	if(bCanFire)
+	{
+		
+
+		ServerFire(HitTarget);
+
+		if(EquippedWeapon)
+		{
+			bCanFire = false;
+			CrosshairShootingFactor = 2.f;
+		}
+		StartFireTimer();
+	}
+	
+}
+
+void UCombatComponent::StartFireTimer() 
+{
+	if(Character == nullptr || EquippedWeapon == nullptr) return;
+	Character->GetWorldTimerManager().SetTimer(FireTimer, this, &UCombatComponent::FireTimerFinished, EquippedWeapon->FireDelay);
+}
+
+void UCombatComponent::FireTimerFinished() 
+{
+	if(EquippedWeapon == nullptr) return;
+	bCanFire = true;
+	if(bFireButtonPressed && EquippedWeapon->bAutomatic)
+	{
+		Fire();
+	}
+}
+
+
 void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget) 
 {
 	MulticastFire(TraceHitTarget);
@@ -262,6 +285,7 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
 		EquippedWeapon->Fire(TraceHitTarget);
 	}
 }
+
 
 void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip) 
 {
@@ -278,7 +302,45 @@ void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip)
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 	Character->bUseControllerRotationYaw = true;
 
-
-
-
 }
+
+void UCombatComponent::OnRep_EquippedWeapon() 
+{
+	if(EquippedWeapon && Character)
+	{
+		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+		Character->bUseControllerRotationYaw = true;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
