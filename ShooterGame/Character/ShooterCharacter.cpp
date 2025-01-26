@@ -154,7 +154,7 @@ void AShooterCharacter::PlayHitReactMontage()
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("PlayHitReactMontage Function Successfully Called"));
+	//UE_LOG(LogTemp, Warning, TEXT("PlayHitReactMontage Function Successfully Called"));
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if(AnimInstance && HitReactMontage)
 	{
@@ -315,7 +315,7 @@ void AShooterCharacter::SimProxyTurn()
 	ProxyRotation = GetActorRotation();
 
 	ProxyYaw = UKismetMathLibrary::NormalizedDeltaRotator(ProxyRotation, ProxyRotationLastFrame).Yaw;
-	UE_LOG(LogTemp, Warning, TEXT("ProxyYaw: %f"), ProxyYaw);
+	//UE_LOG(LogTemp, Warning, TEXT("ProxyYaw: %f"), ProxyYaw);
 	if(FMath::Abs(ProxyYaw) > TurnThreshold)
 	{
 		if(ProxyYaw > TurnThreshold)

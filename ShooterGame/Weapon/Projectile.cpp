@@ -66,28 +66,42 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 
     // Cast to the target character
     AShooterCharacter* ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
+	
     if (ShooterCharacter)
     {
+		ImpactSoundToPlay = ImpactSoundBody;
         ShooterCharacter->MulticastHit();
     }
+	else
+	{
+		ImpactSoundToPlay = ImpactSoundEnvironment;
+	}
+
+	if(ImpactSoundToPlay)
+	{
+		MulticastPlayImpactSound(ImpactSoundToPlay);
+	}
 
     // Destroy the projectile
     Destroy();
 }
 
-
-void AProjectile::Destroyed() 
+void AProjectile::MulticastPlayImpactSound_Implementation(USoundCue* ImpactSound) 
 {
-	Super::Destroyed();
-
-	if(ImpactParticles)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, GetActorTransform());
-	}
-
 	if(ImpactSound)
 	{
 		UGameplayStatics::SpawnSoundAtLocation(this, ImpactSound, GetActorLocation());
 	}
+}
+
+
+void AProjectile::Destroyed() 
+{
+	if(ImpactParticles)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, GetActorTransform());
+	}
+	
+	Super::Destroyed();
 }
 

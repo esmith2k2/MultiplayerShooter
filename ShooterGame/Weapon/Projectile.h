@@ -20,12 +20,17 @@ public:
 
 	virtual void Destroyed() override;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayImpactSound(class USoundCue* ImpactSoundTo);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	class USoundCue* ImpactSoundToPlay;
 
 public:	
 	
@@ -45,6 +50,9 @@ public:
 	class UParticleSystem* ImpactParticles;
 
 	UPROPERTY(EditAnywhere)
-	class USoundCue* ImpactSound;
+	class USoundCue* ImpactSoundEnvironment;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue* ImpactSoundBody;
 
 };
