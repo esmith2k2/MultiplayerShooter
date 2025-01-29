@@ -13,6 +13,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "ShooterAnimInstance.h"
 #include "ShooterGame/ShooterGame.h"
+#include "ShooterGame/PlayerController/ShooterPlayerController.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -56,6 +57,13 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	ShooterPlayerController = Cast<AShooterPlayerController>(Controller);
+
+	if(ShooterPlayerController)
+	{
+		ShooterPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+
 }
 
 
