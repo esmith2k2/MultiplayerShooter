@@ -70,7 +70,6 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
     if (ShooterCharacter)
     {
 		ImpactSoundToPlay = ImpactSoundBody;
-        ShooterCharacter->MulticastHit();
     }
 	else
 	{

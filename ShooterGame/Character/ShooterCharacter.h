@@ -23,14 +23,11 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Crosshairs)
 	class UTexture2D* CrosshairsCenter;
-
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastHit();
 	
 	virtual void OnRep_ReplicatedMovement() override;
 
 protected:
+
 	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
@@ -48,6 +45,11 @@ protected:
 	void FireButtonPressed();
 	void FireButtonReleased();
 	void PlayHitReactMontage();
+
+	UFUNCTION()
+	void RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
+	
+	void UpdateHUDHealth();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")

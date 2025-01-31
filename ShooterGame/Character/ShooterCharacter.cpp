@@ -57,13 +57,12 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	ShooterPlayerController = Cast<AShooterPlayerController>(Controller);
+	UpdateHUDHealth();
 
-	if(ShooterPlayerController)
+	if(HasAuthority())
 	{
-		ShooterPlayerController->SetHUDHealth(Health, MaxHealth);
+		OnTakeAnyDamage.AddDynamic(this, &AShooterCharacter::RecieveDamage);
 	}
-
 }
 
 
@@ -173,9 +172,12 @@ void AShooterCharacter::PlayHitReactMontage()
 	}
 }
 
-void AShooterCharacter::MulticastHit_Implementation() 
+void AShooterCharacter::RecieveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser) 
 {
+	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
+	UpdateHUDHealth();
 	PlayHitReactMontage();
+
 }
 
 void AShooterCharacter::MoveForward(float Value) 
@@ -433,7 +435,18 @@ float AShooterCharacter::CalculateSpeed()
 
 void AShooterCharacter::OnRep_Health() 
 {
-	
+	UpdateHUDHealth();
+	PlayHitReactMontage();
+}
+
+void AShooterCharacter::UpdateHUDHealth() 
+{
+	ShooterPlayerController = ShooterPlayerController == nullptr ? Cast<AShooterPlayerController>(Controller) : ShooterPlayerController;
+
+	if(ShooterPlayerController)
+	{
+		ShooterPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
 }
 
 void AShooterCharacter::SetOverlappingWeapon(AWeapon* Weapon) 

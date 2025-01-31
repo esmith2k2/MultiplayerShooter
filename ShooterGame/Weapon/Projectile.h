@@ -32,6 +32,9 @@ protected:
 
 	class USoundCue* ImpactSoundToPlay;
 
+	UPROPERTY(EditAnywhere)
+	float Damage = 15.f;
+
 public:	
 	
 	UPROPERTY(EditAnywhere)
