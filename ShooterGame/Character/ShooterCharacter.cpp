@@ -89,9 +89,10 @@ void AShooterCharacter::Tick(float DeltaTime)
 	HideCharacterIfCameraClose();
 }
 
-void AShooterCharacter::Elim() 
+void AShooterCharacter::Elim_Implementation() 
 {
-	
+	bEliminated = true; 
+	PlayElimMontage();
 }
 
 void AShooterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const 
@@ -150,6 +151,15 @@ void AShooterCharacter::PlayFireMontage(bool bAiming)
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 
+}
+
+void AShooterCharacter::PlayElimMontage() 
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance && ElimMontage)
+	{
+		AnimInstance->Montage_Play(ElimMontage);
+	}
 }
 
 void AShooterCharacter::OnRep_ReplicatedMovement() 

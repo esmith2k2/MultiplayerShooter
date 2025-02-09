@@ -20,12 +20,14 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 	void PlayFireMontage(bool bAiming);
+	void PlayElimMontage();
 
 	UPROPERTY(EditAnywhere, Category = Crosshairs)
 	class UTexture2D* CrosshairsCenter;
 	
 	virtual void OnRep_ReplicatedMovement() override;
 
+	UFUNCTION(NetMulticast, Reliable)
 	void Elim();
 
 protected:
@@ -88,6 +90,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	class UAnimMontage* HitReactMontage;
 
+	UPROPERTY(EditAnywhere, Category = Combat)
+	class UAnimMontage* ElimMontage;
+
 	
 
 	void HideCharacterIfCameraClose();
@@ -117,6 +122,7 @@ private:
 
 	class AShooterPlayerController* ShooterPlayerController;
 
+	bool bEliminated = false;
 
 public:	
 	void SetOverlappingWeapon(AWeapon* Weapon);
@@ -134,5 +140,6 @@ public:
 	FORCEINLINE UCameraComponent* GetCharacterCamera() const { return CharacterCamera; }
 	FORCEINLINE UCombatComponent* GetCombatComponent() { return Combat; }
 	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
+	FORCEINLINE bool IsEliminated() const { return bEliminated; }
 
 };
