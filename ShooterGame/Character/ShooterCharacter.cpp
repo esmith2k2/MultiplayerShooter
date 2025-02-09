@@ -14,6 +14,7 @@
 #include "ShooterAnimInstance.h"
 #include "ShooterGame/ShooterGame.h"
 #include "ShooterGame/PlayerController/ShooterPlayerController.h"
+#include "ShooterGame/GameMode/ShooterGameMode.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -88,6 +89,11 @@ void AShooterCharacter::Tick(float DeltaTime)
 	HideCharacterIfCameraClose();
 }
 
+void AShooterCharacter::Elim() 
+{
+	
+}
+
 void AShooterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -154,6 +160,8 @@ void AShooterCharacter::OnRep_ReplicatedMovement()
 	TimeSinceLastMovementReplication = 0.f;
 }
 
+
+
 void AShooterCharacter::PlayHitReactMontage() 
 {
 	
@@ -177,6 +185,20 @@ void AShooterCharacter::RecieveDamage(AActor* DamagedActor, float Damage, const 
 	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
 	UpdateHUDHealth();
 	PlayHitReactMontage();
+
+	
+
+	if(Health == 0.f)
+	{
+		AShooterGameMode* ShooterGameMode = GetWorld()->GetAuthGameMode<AShooterGameMode>();
+		if(ShooterGameMode)
+			{
+				ShooterPlayerController = ShooterPlayerController == nullptr ? Cast<AShooterPlayerController>(Controller) : ShooterPlayerController;
+				AShooterPlayerController* AttackerController = Cast<AShooterPlayerController>(InstigatorController);
+				ShooterGameMode->PlayerEliminated(this, ShooterPlayerController, AttackerController);
+			}
+	}
+	
 
 }
 
