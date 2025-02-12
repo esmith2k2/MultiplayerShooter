@@ -15,12 +15,15 @@
 #include "ShooterGame/ShooterGame.h"
 #include "ShooterGame/PlayerController/ShooterPlayerController.h"
 #include "ShooterGame/GameMode/ShooterGameMode.h"
+#include "TimerManager.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetMesh());
@@ -89,10 +92,25 @@ void AShooterCharacter::Tick(float DeltaTime)
 	HideCharacterIfCameraClose();
 }
 
-void AShooterCharacter::Elim_Implementation() 
+void AShooterCharacter::Elim()
+{
+	MulticastElim();
+	GetWorldTimerManager().SetTimer(ElimTimer, this, &AShooterCharacter::ElimTimerFinished, ElimDelay);
+}
+
+void AShooterCharacter::MulticastElim_Implementation() 
 {
 	bEliminated = true; 
 	PlayElimMontage();
+}
+
+void AShooterCharacter::ElimTimerFinished()
+{
+	AShooterGameMode* ShooterGameMode = GetWorld()->GetAuthGameMode<AShooterGameMode>();
+	if(ShooterGameMode)
+	{
+		ShooterGameMode->RequestRespawn(this, Controller);
+	}
 }
 
 void AShooterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const 
@@ -169,6 +187,8 @@ void AShooterCharacter::OnRep_ReplicatedMovement()
 	SimProxyTurn();
 	TimeSinceLastMovementReplication = 0.f;
 }
+
+
 
 
 
@@ -470,6 +490,8 @@ void AShooterCharacter::OnRep_Health()
 	UpdateHUDHealth();
 	PlayHitReactMontage();
 }
+
+
 
 void AShooterCharacter::UpdateHUDHealth() 
 {
