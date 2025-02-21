@@ -33,6 +33,8 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastElim();
 
+	virtual void Destroyed() override;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -130,7 +132,7 @@ private:
 	FTimerHandle ElimTimer;
 
 	UPROPERTY(EditDefaultsOnly)
-	float ElimDelay = 2.5f;
+	float ElimDelay = 1.5f;
 
 	void ElimTimerFinished();
 
@@ -159,6 +161,20 @@ private:
 	// Material instance set on the blueprint, used with the dynamic material instance
 	UPROPERTY(Editanywhere, Category = "Elim")
 	UMaterialInstance* DissolveMaterialInstance;
+
+
+	/*
+	* Elim bot
+	*/
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ElimBotEffect;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* ElimBotComponent;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue* ElimBotSound;
 
 public:	
 	void SetOverlappingWeapon(AWeapon* Weapon);

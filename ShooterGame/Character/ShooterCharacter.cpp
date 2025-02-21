@@ -16,6 +16,9 @@
 #include "ShooterGame/PlayerController/ShooterPlayerController.h"
 #include "ShooterGame/GameMode/ShooterGameMode.h"
 #include "TimerManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -100,6 +103,16 @@ void AShooterCharacter::Elim()
 	GetWorldTimerManager().SetTimer(ElimTimer, this, &AShooterCharacter::ElimTimerFinished, ElimDelay);
 }
 
+void AShooterCharacter::Destroyed() 
+{
+	Super::Destroyed();
+
+	if(ElimBotComponent)
+	{
+		ElimBotComponent->DestroyComponent();
+	}
+}
+
 void AShooterCharacter::MulticastElim_Implementation() 
 {
 	if(Combat && Combat->EquippedWeapon)
@@ -133,6 +146,17 @@ void AShooterCharacter::MulticastElim_Implementation()
 	// Disable Collision
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// Spawn Elim bot
+	if(ElimBotEffect)
+	{
+		FVector ElimBotSpawnPoint(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 200.f);
+		ElimBotComponent = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ElimBotEffect, ElimBotSpawnPoint, GetActorRotation());
+	}
+	if(ElimBotSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(this, ElimBotSound, GetActorLocation());
+	}
 
 
 }
