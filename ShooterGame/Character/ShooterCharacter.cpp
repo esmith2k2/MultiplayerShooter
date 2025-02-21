@@ -102,8 +102,15 @@ void AShooterCharacter::Elim()
 
 void AShooterCharacter::MulticastElim_Implementation() 
 {
+	if(Combat && Combat->EquippedWeapon)
+	{
+		Combat->EquippedWeapon->Dropped();
+	}
+
 	bEliminated = true; 
 	PlayElimMontage();
+
+	// Start dissolve effect
 
 	if(DissolveMaterialInstance)
 	{
@@ -114,6 +121,19 @@ void AShooterCharacter::MulticastElim_Implementation()
 
 	}
 	StartDissolve();
+
+	// Disable character movement
+	GetCharacterMovement()->DisableMovement();
+	GetCharacterMovement()->StopMovementImmediately();
+	if(ShooterPlayerController)
+	{
+		DisableInput(ShooterPlayerController);
+	}
+
+	// Disable Collision
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 
 }
 
