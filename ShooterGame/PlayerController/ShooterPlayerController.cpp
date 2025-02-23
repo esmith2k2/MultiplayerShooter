@@ -6,6 +6,7 @@
 #include "ShooterGame/HUD/CharacterOverlay.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "ShooterGame/Character/ShooterCharacter.h"
 
 
     void AShooterPlayerController::BeginPlay() 
@@ -15,6 +16,17 @@
 
     ShooterHUD = Cast<AShooterHUD>(GetHUD());
 
+}
+
+void AShooterPlayerController::OnPossess(APawn* InPawn) 
+{
+    Super::OnPossess(InPawn);
+
+    AShooterCharacter* ShooterCharacter = Cast<AShooterCharacter>(InPawn);
+    if(ShooterCharacter)
+    {
+        SetHUDHealth(ShooterCharacter->GetHealth(), ShooterCharacter->GetMaxHealth());
+    }
 }
 
 void AShooterPlayerController::SetHUDHealth(float Health, float MaxHealth) 
@@ -38,3 +50,5 @@ void AShooterPlayerController::SetHUDHealth(float Health, float MaxHealth)
     }
 
 }
+
+
