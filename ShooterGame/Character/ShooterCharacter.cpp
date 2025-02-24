@@ -19,6 +19,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "ShooterGame/PlayerState/ShooterPlayerState.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -95,6 +96,8 @@ void AShooterCharacter::Tick(float DeltaTime)
 	
 
 	HideCharacterIfCameraClose();
+
+	PollInit();
 }
 
 void AShooterCharacter::Elim()
@@ -577,6 +580,18 @@ void AShooterCharacter::UpdateHUDHealth()
 	if(ShooterPlayerController)
 	{
 		ShooterPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+}
+
+void AShooterCharacter::PollInit() 
+{
+	if(ShooterPlayerState == nullptr)
+	{
+		ShooterPlayerState = GetPlayerState<AShooterPlayerState>();
+		if(ShooterPlayerState)
+		{
+			ShooterPlayerState->AddToScore(0.f);
+		}
 	}
 }
 

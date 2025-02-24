@@ -60,6 +60,9 @@ protected:
 	
 	void UpdateHUDHealth();
 
+	// Poll for any relevant classes and initialize HUD
+	void PollInit();
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class USpringArmComponent* CameraBoom;
@@ -175,6 +178,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class USoundCue* ElimBotSound;
+
+	class AShooterPlayerState* ShooterPlayerState;
 
 public:	
 	void SetOverlappingWeapon(AWeapon* Weapon);
