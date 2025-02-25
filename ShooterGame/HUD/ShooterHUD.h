@@ -12,10 +12,15 @@ struct FHUDPackage
 	GENERATED_BODY()
 
 public: 
+	UPROPERTY()
 	class UTexture2D* CrosshairsCenter;
+	UPROPERTY()
 	class UTexture2D* CrosshairsLeft;
+	UPROPERTY()
 	class UTexture2D* CrosshairsRight;
+	UPROPERTY()
 	class UTexture2D* CrosshairsTop;
+	UPROPERTY()
 	class UTexture2D* CrosshairsBottom;
 	float CrosshairSpread;
 	FLinearColor CrosshairsColor;
@@ -37,6 +42,7 @@ virtual void DrawHUD() override;
 UPROPERTY(EditAnywhere, Category = "Player Stats")
 TSubclassOf<class UUserWidget> CharacterOverlayClass;
 
+UPROPERTY()
 class UCharacterOverlay* CharacterOverlay;
 
 

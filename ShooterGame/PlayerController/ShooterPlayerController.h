@@ -18,6 +18,7 @@ public:
 
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDScore(float Score);
+	void SetHUDDeaths(int32 Deaths);
 	virtual void OnPossess(APawn* InPawn) override;
 
 
@@ -29,6 +30,7 @@ protected:
 
 private: 
 
+	UPROPERTY()
 	class AShooterHUD* ShooterHUD;
 
 

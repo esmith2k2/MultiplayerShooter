@@ -26,6 +26,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ShowPlayerName(APawn* InPawn);
 
+	UPROPERTY()
 	class APlayerState* PlayerState;
 
 private:

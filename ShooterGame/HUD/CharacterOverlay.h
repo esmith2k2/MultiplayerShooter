@@ -25,5 +25,8 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ScoreAmount;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* DeathsAmount;
 	
 };

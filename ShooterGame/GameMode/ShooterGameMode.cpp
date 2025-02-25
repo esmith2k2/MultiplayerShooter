@@ -19,6 +19,10 @@ void AShooterGameMode::PlayerEliminated(class AShooterCharacter* EliminatedChara
     {
         AttackerPlayerState->AddToScore(1.f);
     }
+    if(VictimPlayerState)
+    {
+        VictimPlayerState->AddToDeaths(1);
+    }
 
     if(EliminatedCharacter)
     {
