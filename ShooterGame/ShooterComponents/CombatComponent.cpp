@@ -155,6 +155,8 @@ void UCombatComponent::InterpFOV(float DeltaTime)
 
 }
 
+
+
 void UCombatComponent::SetAiming(bool bIsAiming) 
 {
 	bAiming = bIsAiming;
@@ -238,7 +240,7 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 
 void UCombatComponent::Fire() 
 {
-	if(bCanFire)
+	if(CanFire())
 	{
 		
 
@@ -325,8 +327,11 @@ void UCombatComponent::OnRep_EquippedWeapon()
 	}
 }
 
-
-
+bool UCombatComponent::CanFire() 
+{
+	if(EquippedWeapon == nullptr) return false;
+	return !EquippedWeapon->IsEmpty() && bCanFire;
+}
 
 
 
