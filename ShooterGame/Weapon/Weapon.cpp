@@ -10,6 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "BulletCasing.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "ShooterGame/PlayerController/ShooterPlayerController.h"
 
 
 // Sets default values
@@ -69,6 +70,7 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeP
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AWeapon, WeaponState);
+	DOREPLIFETIME(AWeapon, Ammo);
 }
 
 void AWeapon::Fire(const FVector &HitTarget) 
@@ -95,6 +97,7 @@ void AWeapon::Fire(const FVector &HitTarget)
 
 	}
 
+	SpendRound();
 
 }
 
@@ -104,6 +107,9 @@ void AWeapon::Dropped()
 	FDetachmentTransformRules DetatchRules(EDetachmentRule::KeepWorld, true);
 	WeaponMesh->DetachFromComponent(DetatchRules);
 	SetOwner(nullptr);
+	ShooterOwnerCharacter = nullptr;
+	ShooterOwnerController = nullptr;
+
 }
 
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex,  bool bFromSweep,  const FHitResult& SweepResult) 
@@ -143,6 +149,49 @@ void AWeapon::OnRep_WeaponState()
 		break;
 
 	}
+}
+
+void AWeapon::SetHUDAmmo() 
+{
+	ShooterOwnerCharacter = ShooterOwnerCharacter == nullptr ? Cast<AShooterCharacter>(GetOwner()) : ShooterOwnerCharacter;
+	if(ShooterOwnerCharacter)
+	{
+		ShooterOwnerController = ShooterOwnerController == nullptr ? Cast<AShooterPlayerController>(ShooterOwnerCharacter->Controller) : ShooterOwnerController;
+		if(ShooterOwnerController)
+		{
+			ShooterOwnerController->SetHUDWeaponAmmo(Ammo);
+		}
+	}
+}
+
+void AWeapon::SpendRound() 
+{
+	Ammo -= 1;
+	SetHUDAmmo();
+}
+
+void AWeapon::OnRep_Ammo() 
+{
+	SetHUDAmmo();
+}
+
+void AWeapon::OnRep_Owner() 
+{
+	Super::OnRep_Owner();
+
+	if(Owner == nullptr)
+	{
+		ShooterOwnerCharacter = nullptr;
+		ShooterOwnerController = nullptr;
+	}
+	else
+	{
+		SetHUDAmmo();
+	}
+
+
+	
+
 }
 
 void AWeapon::SetWeaponState(EWeaponState State) 

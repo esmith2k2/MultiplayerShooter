@@ -118,6 +118,10 @@ void AShooterCharacter::Destroyed()
 
 void AShooterCharacter::MulticastElim_Implementation() 
 {
+	if(ShooterPlayerController)
+	{
+		ShooterPlayerController->SetHUDWeaponAmmo(0);
+	}
 	if(Combat && Combat->EquippedWeapon)
 	{
 		Combat->EquippedWeapon->Dropped();
