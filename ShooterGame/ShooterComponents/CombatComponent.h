@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "ShooterGame/HUD/ShooterHUD.h"
+#include "ShooterGame/Weapon/WeaponTypes.h"
 #include "CombatComponent.generated.h"
 
 #define TRACE_LENGTH 100000.f
@@ -121,6 +122,16 @@ private:
 	void StartFireTimer();
 	void FireTimerFinished();
 
+	// Ammo being carried for the currently-equipped weapon
+	UPROPERTY(ReplicatedUsing = OnRep_CarriedAmmo)
+	int32 CarriedAmmo;
+
+	UFUNCTION()
+	void OnRep_CarriedAmmo();
+
+	TMap<EWeaponType, int32> CarriedAmmoMap;
+
+	
 public:	
 
 	FORCEINLINE FVector GetAimEndLocation() { return AimEndLocation; }
