@@ -44,8 +44,8 @@ AShooterCharacter::AShooterCharacter()
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
 
-	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
-	Combat->SetIsReplicated(true);
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+	CombatComponent->SetIsReplicated(true);
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
@@ -122,9 +122,9 @@ void AShooterCharacter::MulticastElim_Implementation()
 	{
 		ShooterPlayerController->SetHUDWeaponAmmo(0);
 	}
-	if(Combat && Combat->EquippedWeapon)
+	if(CombatComponent && CombatComponent->EquippedWeapon)
 	{
-		Combat->EquippedWeapon->Dropped();
+		CombatComponent->EquippedWeapon->Dropped();
 	}
 
 	bEliminated = true; 
@@ -231,15 +231,15 @@ void AShooterCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	if(Combat)
+	if(CombatComponent)
 	{
-		Combat->Character = this;
+		CombatComponent->Character = this;
 	}
 }
 
 void AShooterCharacter::PlayFireMontage(bool bAiming) 
 {
-	if(Combat == nullptr || Combat->EquippedWeapon == nullptr)
+	if(CombatComponent == nullptr || CombatComponent->EquippedWeapon == nullptr)
 	{
 		return;
 	}
@@ -279,7 +279,7 @@ void AShooterCharacter::OnRep_ReplicatedMovement()
 void AShooterCharacter::PlayHitReactMontage() 
 {
 	
-	if(Combat == nullptr || Combat->EquippedWeapon == nullptr)
+	if(CombatComponent == nullptr || CombatComponent->EquippedWeapon == nullptr)
 	{
 		return;
 	}
@@ -348,11 +348,11 @@ void AShooterCharacter::LookUp(float Value)
 
 void AShooterCharacter::EquipButtonPressed() 
 {
-	if(Combat)
+	if(CombatComponent)
 	{
 		if(HasAuthority())
 		{
-			Combat->EquipWeapon(OverlappingWeapon);
+			CombatComponent->EquipWeapon(OverlappingWeapon);
 		}
 		else
 		{
@@ -364,9 +364,9 @@ void AShooterCharacter::EquipButtonPressed()
 
 void AShooterCharacter::ServerEquipButtonpressed_Implementation() 
 {
-	if(Combat)
+	if(CombatComponent)
 	{
-		Combat->EquipWeapon(OverlappingWeapon);
+		CombatComponent->EquipWeapon(OverlappingWeapon);
 	}
 }
 
@@ -386,23 +386,23 @@ void AShooterCharacter::CrouchButtonPressed()
 
 void AShooterCharacter::AimButtonPressed() 
 {
-	if(Combat)
+	if(CombatComponent)
 	{
-		Combat->SetAiming(true);
+		CombatComponent->SetAiming(true);
 	}
 }
 
 void AShooterCharacter::AimButtonReleased() 
 {
-	if(Combat)
+	if(CombatComponent)
 	{
-		Combat->SetAiming(false);
+		CombatComponent->SetAiming(false);
 	}
 }
 
 void AShooterCharacter::AimOffset(float DeltaTime) 
 {
-	if(Combat && Combat->EquippedWeapon == nullptr) return;
+	if(CombatComponent && CombatComponent->EquippedWeapon == nullptr) return;
 
 
     float Speed = CalculateSpeed();
@@ -448,7 +448,7 @@ void AShooterCharacter::CalculateAO_Pitch()
 
 void AShooterCharacter::SimProxyTurn() 
 {
-	if(Combat == nullptr || Combat->EquippedWeapon == nullptr) return;
+	if(CombatComponent == nullptr || CombatComponent->EquippedWeapon == nullptr) return;
 	bRotateRootBone = false;
 	float Speed = CalculateSpeed();
 	if(Speed > 0.f)
@@ -501,17 +501,17 @@ void AShooterCharacter::Jump()
 
 void AShooterCharacter::FireButtonPressed() 
 {
-	if(Combat)
+	if(CombatComponent)
 	{
-		Combat->FireButtonPressed(true);
+		CombatComponent->FireButtonPressed(true);
 	}
 }
 
 void AShooterCharacter::FireButtonReleased() 
 {
-	if(Combat)
+	if(CombatComponent)
 	{
-		Combat->FireButtonPressed(false);
+		CombatComponent->FireButtonPressed(false);
 	}
 }
 
@@ -547,17 +547,17 @@ void AShooterCharacter::HideCharacterIfCameraClose()
 	if((CharacterCamera->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)
 	{
 		GetMesh()->SetVisibility(false);
-		if(Combat && Combat->EquippedWeapon && Combat->EquippedWeapon->GetWeaponMesh())
+		if(CombatComponent && CombatComponent->EquippedWeapon && CombatComponent->EquippedWeapon->GetWeaponMesh())
 		{
-			Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = true;
+			CombatComponent->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = true;
 		}
 	}
 	else
 	{
 		GetMesh()->SetVisibility(true);
-		if(Combat && Combat->EquippedWeapon && Combat->EquippedWeapon->GetWeaponMesh())
+		if(CombatComponent && CombatComponent->EquippedWeapon && CombatComponent->EquippedWeapon->GetWeaponMesh())
 		{
-			Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = false;
+			CombatComponent->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = false;
 		}
 	}
 }
@@ -633,22 +633,22 @@ void AShooterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 
 bool AShooterCharacter::IsWeaponEquipped() 
 {
-	return (Combat && Combat->EquippedWeapon);
+	return (CombatComponent && CombatComponent->EquippedWeapon);
 }
 
 bool AShooterCharacter::IsAiming() 
 {
-	return (Combat && Combat->bAiming);
+	return (CombatComponent && CombatComponent->bAiming);
 }
 
 AWeapon* AShooterCharacter::GetEquippedWeapon() 
 {
-	if(Combat == nullptr) return nullptr;
-	return Combat->EquippedWeapon;
+	if(CombatComponent == nullptr) return nullptr;
+	return CombatComponent->EquippedWeapon;
 }
 
 FVector AShooterCharacter::GetHitTarget() const
 {
-	if (Combat == nullptr) return FVector();
-	return Combat->HitTarget;
+	if (CombatComponent == nullptr) return FVector();
+	return CombatComponent->HitTarget;
 }

@@ -79,7 +79,7 @@ private:
 	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
 
 	UPROPERTY(VisibleAnywhere)
-	class UCombatComponent* Combat;
+	class UCombatComponent* CombatComponent;
 
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonpressed();
@@ -197,7 +197,7 @@ public:
 	FVector GetHitTarget() const; 
 
 	FORCEINLINE UCameraComponent* GetCharacterCamera() const { return CharacterCamera; }
-	FORCEINLINE UCombatComponent* GetCombatComponent() { return Combat; }
+	FORCEINLINE UCombatComponent* GetCombatComponent() { return CombatComponent; }
 	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
 	FORCEINLINE bool IsEliminated() const { return bEliminated; }
 	FORCEINLINE float GetHealth() const { return Health; }

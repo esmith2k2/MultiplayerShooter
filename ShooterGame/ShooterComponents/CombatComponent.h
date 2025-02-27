@@ -131,7 +131,12 @@ private:
 
 	TMap<EWeaponType, int32> CarriedAmmoMap;
 
-	
+	UPROPERTY(EditAnywhere)
+	int32 StartingAssaultRifleAmmo = 30;
+
+	void InitializeCarriedAmmo();
+
+
 public:	
 
 	FORCEINLINE FVector GetAimEndLocation() { return AimEndLocation; }
