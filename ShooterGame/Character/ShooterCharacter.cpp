@@ -20,6 +20,7 @@
 #include "Sound/SoundCue.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "ShooterGame/PlayerState/ShooterPlayerState.h"
+#include "ShooterGame/Weapon/WeaponTypes.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -218,6 +219,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AShooterCharacter::AimButtonReleased);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AShooterCharacter::FireButtonPressed);
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AShooterCharacter::FireButtonReleased);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AShooterCharacter::ReloadButtonPressed);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AShooterCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AShooterCharacter::MoveRight);
@@ -253,6 +255,28 @@ void AShooterCharacter::PlayFireMontage(bool bAiming)
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 
+}
+
+void AShooterCharacter::PlayReloadMontage() 
+{
+	if(CombatComponent == nullptr || CombatComponent->EquippedWeapon == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance && ReloadMontage)
+	{
+		AnimInstance->Montage_Play(ReloadMontage);
+		FName SectionName;
+
+		switch (CombatComponent->EquippedWeapon->GetWeaponType())
+		{
+		case EWeaponType::EWT_AssaultRifle:
+			SectionName = FName("Rifle");
+			break;
+		}
+	}
 }
 
 void AShooterCharacter::PlayElimMontage() 
@@ -367,6 +391,14 @@ void AShooterCharacter::ServerEquipButtonpressed_Implementation()
 	if(CombatComponent)
 	{
 		CombatComponent->EquipWeapon(OverlappingWeapon);
+	}
+}
+
+void AShooterCharacter::ReloadButtonPressed() 
+{
+	if(CombatComponent)
+	{
+		CombatComponent->Reload();
 	}
 }
 
