@@ -684,3 +684,9 @@ FVector AShooterCharacter::GetHitTarget() const
 	if (CombatComponent == nullptr) return FVector();
 	return CombatComponent->HitTarget;
 }
+
+ECombatState AShooterCharacter::GetCombatState() const
+{
+	if(CombatComponent == nullptr) return ECombatState::ECS_MAX;
+	return CombatComponent->CombatState;
+}

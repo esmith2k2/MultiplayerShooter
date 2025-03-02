@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "ShooterGame/Weapon/Weapon.h"
 #include "ShooterGame/ShooterComponents/CombatComponent.h"
+#include "ShooterGame/ShooterTypes/CombatState.h"
 
 
 void UShooterAnimInstance::NativeInitializeAnimation() 
@@ -86,21 +87,10 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
             FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(RightHandTransform.GetLocation(), (RightHandTransform.GetLocation() + (RightHandTransform.GetLocation() - ShooterCharacter->GetHitTarget())));
             RightHandRotation = FMath::RInterpTo(RightHandRotation, LookAtRotation, DeltaTime, 25.f);
         }
-        
-        /*
-        Debug lines for weapon rotation to aim location
-
-        FTransform MuzzleTipTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform(FName("MuzzleFlash"), ERelativeTransformSpace::RTS_World);
-        FVector MuzzleX(FRotationMatrix(MuzzleTipTransform.GetRotation().Rotator()).GetUnitAxis(EAxis::X));
-        DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(),MuzzleTipTransform.GetLocation() + MuzzleX * 1000, FColor::Red, false, -1.f, 0U, 1.f);
-        DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(), ShooterCharacter->GetHitTarget(), FColor::Blue, false, -1.f, 0U, 1.f);
-        */
-       
-        
-        
 
     }
 
+    bUseFABRIK = ShooterCharacter->GetCombatState() != ECombatState::ECS_Reloading;
    
     
 }
