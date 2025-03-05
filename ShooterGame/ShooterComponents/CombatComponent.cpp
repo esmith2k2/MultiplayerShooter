@@ -289,11 +289,17 @@ void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& Trac
 void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget) 
 {
 	if(EquippedWeapon == nullptr) return;
-	if(Character)
+	if(Character && CombatState == ECombatState::ECS_Unoccupied)
 	{
 		Character->PlayFireMontage(bAiming);
 		EquippedWeapon->Fire(TraceHitTarget);
 	}
+}
+
+bool UCombatComponent::CanFire() 
+{
+	if(EquippedWeapon == nullptr) return false;
+	return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
 }
 
 
@@ -371,6 +377,10 @@ void UCombatComponent::FinishReloading()
 	{
 		CombatState = ECombatState::ECS_Unoccupied;
 	}
+	if(bFireButtonPressed)
+	{
+		Fire();
+	}
 	
 }
 
@@ -386,6 +396,12 @@ void UCombatComponent::OnRep_CombatState()
 
 	case  ECombatState::ECS_Reloading:
 		HandleReload();
+		break;
+	case  ECombatState::ECS_Unoccupied:
+		if(bFireButtonPressed)
+		{
+			Fire();
+		}
 		break;
 
 	}
@@ -405,11 +421,7 @@ void UCombatComponent::InitializeCarriedAmmo()
 	CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingAssaultRifleAmmo);
 }
 
-bool UCombatComponent::CanFire() 
-{
-	if(EquippedWeapon == nullptr) return false;
-	return !EquippedWeapon->IsEmpty() && bCanFire;
-}
+
 
 
 
