@@ -13,6 +13,7 @@
 #include "ShooterGame/PlayerController/ShooterPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "TimerManager.h"
+#include "Sound/SoundCue.h"
 
 
 UCombatComponent::UCombatComponent()
@@ -334,6 +335,11 @@ void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip)
 		Controller->SetHUDCarriedAmmo(CarriedAmmo);
 	}
 
+	if(EquippedWeapon->EquipSound)
+	{
+		UGameplayStatics::SpawnSoundAttached(EquippedWeapon->EquipSound, EquippedWeapon->GetWeaponMesh()); 
+	}
+
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 	Character->bUseControllerRotationYaw = true;
 
@@ -352,6 +358,11 @@ void UCombatComponent::OnRep_EquippedWeapon()
 		}
 		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 		Character->bUseControllerRotationYaw = true;
+
+		if(EquippedWeapon->EquipSound)
+	{
+		UGameplayStatics::SpawnSoundAttached(EquippedWeapon->EquipSound, EquippedWeapon->GetWeaponMesh()); 
+	}
 	}
 }
 
