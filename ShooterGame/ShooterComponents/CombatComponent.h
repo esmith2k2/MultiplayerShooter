@@ -62,6 +62,8 @@ protected:
 
 	void HandleReload();
 
+	int32 AmountToReload();
+
 private:
 	UPROPERTY()
 	class AShooterCharacter* Character;
@@ -153,6 +155,8 @@ private:
 
 	UFUNCTION()
 	void OnRep_CombatState();
+
+	void UpdateAmmoValues();
 
 
 public:	
