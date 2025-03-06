@@ -279,6 +279,10 @@ void UCombatComponent::FireTimerFinished()
 	{
 		Fire();
 	}
+	if(EquippedWeapon->IsEmpty())
+	{
+		Reload();
+	}
 }
 
 
@@ -338,6 +342,11 @@ void UCombatComponent::EquipWeapon(class AWeapon* WeaponToEquip)
 	if(EquippedWeapon->EquipSound)
 	{
 		UGameplayStatics::SpawnSoundAttached(EquippedWeapon->EquipSound, EquippedWeapon->GetWeaponMesh()); 
+	}
+
+	if(EquippedWeapon->IsEmpty())
+	{
+		Reload();
 	}
 
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
