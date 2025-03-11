@@ -21,6 +21,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "ShooterGame/PlayerState/ShooterPlayerState.h"
 #include "ShooterGame/Weapon/WeaponTypes.h"
+#include "ShooterGame/HUD/OverheadWidget.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -44,6 +45,7 @@ AShooterCharacter::AShooterCharacter()
 
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
+
 
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	CombatComponent->SetIsReplicated(true);
@@ -628,6 +630,13 @@ void AShooterCharacter::PollInit()
 		{
 			ShooterPlayerState->AddToScore(0.f);
 			ShooterPlayerState->AddToDeaths(0);
+
+			// Try to display name above player
+			UOverheadWidget* PlayerNameWidget = Cast<UOverheadWidget>(OverheadWidget->GetUserWidgetObject());
+			if(PlayerNameWidget)
+			{
+				PlayerNameWidget->ShowPlayerName(this);
+			}
 		}
 	}
 }

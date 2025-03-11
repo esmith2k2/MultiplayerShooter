@@ -377,7 +377,7 @@ void UCombatComponent::OnRep_EquippedWeapon()
 
 void UCombatComponent::Reload() 
 {
-	if(CarriedAmmo > 0 && CombatState != ECombatState::ECS_Reloading)
+	if(CarriedAmmo > 0 && CombatState != ECombatState::ECS_Reloading && EquippedWeapon->GetAmmo() != EquippedWeapon->GetMagCapacity())
 	{
 		ServerReload();
 	}
