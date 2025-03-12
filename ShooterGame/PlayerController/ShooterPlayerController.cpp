@@ -23,6 +23,17 @@ void AShooterPlayerController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     SetHUDTime();
+    CheckTimeSync(DeltaTime);
+}
+
+void AShooterPlayerController::CheckTimeSync(float DeltaTime) 
+{
+    TimeSyncRunningTime += DeltaTime;
+    if(IsLocalController() && TimeSyncRunningTime > TimeSyncFrequency)
+    {
+        ServerRequestServerTime(GetWorld()->GetTimeSeconds());
+        TimeSyncRunningTime = 0.f;
+    }
 }
 
 void AShooterPlayerController::OnPossess(APawn* InPawn) 
@@ -35,6 +46,8 @@ void AShooterPlayerController::OnPossess(APawn* InPawn)
         SetHUDHealth(ShooterCharacter->GetHealth(), ShooterCharacter->GetMaxHealth());
     }
 }
+
+
 
 void AShooterPlayerController::SetHUDHealth(float Health, float MaxHealth) 
 {
@@ -152,13 +165,48 @@ void AShooterPlayerController::SetHUDMatchCountdown(float CountdownTime)
 
 void AShooterPlayerController::SetHUDTime() 
 {
-    uint32 SecondsLeft = FMath::CeilToInt32(MatchTime - GetWorld()->GetTimeSeconds());
+    uint32 SecondsLeft = FMath::CeilToInt32(MatchTime - GetServerTime());
 
     if(CountdownInt != SecondsLeft)
     {
-        SetHUDMatchCountdown(FMath::Clamp(MatchTime - GetWorld()->GetTimeSeconds(), 0, MatchTime));
+        SetHUDMatchCountdown(FMath::Clamp(MatchTime - GetServerTime(), 0, MatchTime));
     }
 
     CountdownInt = SecondsLeft;
 }
 
+void AShooterPlayerController::ServerRequestServerTime_Implementation(float TimeOfClientRequest) 
+{
+    float ServerTimeOfReceipt = GetWorld()->GetTimeSeconds();
+    ClientReportServerTime(TimeOfClientRequest, ServerTimeOfReceipt);
+}
+
+void AShooterPlayerController::ClientReportServerTime_Implementation(float TimeOfClientRequest, float TimeServerRecievedClientRequest) 
+{
+    float RoundTripTime = GetWorld()->GetTimeSeconds() - TimeOfClientRequest;
+    float CurrentServerTime = TimeServerRecievedClientRequest + (0.5f * RoundTripTime);
+    ClientServerDelta = CurrentServerTime - GetWorld()->GetTimeSeconds();
+}
+
+float AShooterPlayerController::GetServerTime() 
+{
+    if(!HasAuthority())
+    {
+        return GetWorld()->GetTimeSeconds() + ClientServerDelta;
+    }
+    else
+    {
+        return GetWorld()->GetTimeSeconds();
+    }
+    
+}
+
+void AShooterPlayerController::ReceivedPlayer() 
+{
+    Super:: ReceivedPlayer();
+
+    if(IsLocalController())
+    {
+        ServerRequestServerTime(GetWorld()->GetTimeSeconds());
+    }
+}

@@ -27,6 +27,12 @@ public:
 
 	virtual void OnPossess(APawn* InPawn) override;
 
+	// Synced with server world clock
+	virtual float GetServerTime();
+
+	// Sync with server clock as soon as possible
+	virtual void ReceivedPlayer() override;
+
 
 protected:
 
@@ -35,14 +41,37 @@ protected:
 
 	void SetHUDTime();
 
+	/*
+	* Sync Time between client and server
+	*/
 
+	// Requests current server time, passing the client's time when the request was sent
+	UFUNCTION(Server, Reliable)
+	void ServerRequestServerTime(float TimeOfClientRequest);
+
+	// Reports the current server time to the client in response to ServerRequestServerTime
+	UFUNCTION(Client, Reliable)
+	void ClientReportServerTime(float TimeOfClientRequest, float TimeServerRecievedClientRequest);
+
+	// Difference between client and server time
+	float ClientServerDelta = 0.f;
+
+	// Frequency in seconds in which we should re-sync our ClientServerDelta variable
+	UPROPERTY(EditAnywhere, Category = Time)
+	float TimeSyncFrequency = 5.f;
+
+	// float that will contain the amount of time since our last sync
+	float TimeSyncRunningTime = 0.f;
+
+	// Check to see if ClientServerDelta should be re-synced
+	void CheckTimeSync(float DeltaTime);
 
 private: 
 
 	UPROPERTY()
 	class AShooterHUD* ShooterHUD;
 
-	float MatchTime = 6.f;
+	float MatchTime = 120.f;
 
 	uint32 CountdownInt = 0;
 	
