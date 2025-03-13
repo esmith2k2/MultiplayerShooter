@@ -21,6 +21,7 @@ void AShooterGameMode::BeginPlay()
 
 }
 
+
 void AShooterGameMode::Tick(float DeltaTime) 
 {
     Super::Tick(DeltaTime);
@@ -37,6 +38,19 @@ void AShooterGameMode::Tick(float DeltaTime)
 
 }
 
+void AShooterGameMode::OnMatchStateSet() 
+{
+    Super::OnMatchStateSet();
+
+    for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+    {
+        AShooterPlayerController* ShooterPlayerController = Cast<AShooterPlayerController>(*It);
+        if(ShooterPlayerController)
+        {
+            ShooterPlayerController->OnMatchStateSet(MatchState);
+        }
+    }
+}
 
 void AShooterGameMode::PlayerEliminated(class AShooterCharacter* EliminatedCharacter, class AShooterPlayerController* VictimController, AShooterPlayerController* AttackerController) 
 {

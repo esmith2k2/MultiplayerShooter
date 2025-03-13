@@ -37,19 +37,21 @@ class SHOOTERGAME_API AShooterHUD : public AHUD
 
 public:
 
-virtual void DrawHUD() override;
+	virtual void DrawHUD() override;
 
-UPROPERTY(EditAnywhere, Category = "Player Stats")
-TSubclassOf<class UUserWidget> CharacterOverlayClass;
+	void AddCharacterOverlay();
+	
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+	TSubclassOf<class UUserWidget> CharacterOverlayClass;
 
-UPROPERTY()
-class UCharacterOverlay* CharacterOverlay;
+	UPROPERTY()
+	class UCharacterOverlay* CharacterOverlay;
 
 
 protected:
 
 	virtual void BeginPlay() override;
-	void AddCharacterOverlay();
+
 
 
 private:

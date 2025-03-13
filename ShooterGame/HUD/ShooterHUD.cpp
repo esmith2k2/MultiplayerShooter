@@ -55,7 +55,6 @@ void AShooterHUD::BeginPlay()
 {
     Super::BeginPlay();
 
-    AddCharacterOverlay();
 
 }
 
