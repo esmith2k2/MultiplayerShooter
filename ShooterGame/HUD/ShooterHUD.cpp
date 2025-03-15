@@ -4,6 +4,7 @@
 #include "ShooterHUD.h"
 #include "GameFramework/PlayerController.h"
 #include "CharacterOverlay.h"
+#include "Announcement.h"
 
 
 void AShooterHUD::DrawHUD() 
@@ -67,6 +68,16 @@ void AShooterHUD::AddCharacterOverlay()
         CharacterOverlay->AddToViewport();
     }
 
+}
+
+void AShooterHUD::AddAnnouncement() 
+{
+    APlayerController* PlayerController = GetOwningPlayerController();
+    if(PlayerController && AnnouncementClass)
+    {
+        Announcement = CreateWidget<UAnnouncement>(PlayerController, AnnouncementClass);
+        Announcement->AddToViewport();
+    }
 }
 
 void AShooterHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter, FVector2D Spread, FLinearColor CrosshairColor) 

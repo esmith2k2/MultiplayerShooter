@@ -4,6 +4,7 @@
 #include "ShooterPlayerController.h"
 #include "ShooterGame/HUD/ShooterHUD.h"
 #include "ShooterGame/HUD/CharacterOverlay.h"
+#include "ShooterGame/HUD/Announcement.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "ShooterGame/Character/ShooterCharacter.h"
@@ -24,6 +25,10 @@ void AShooterPlayerController::BeginPlay()
 
 
     ShooterHUD = Cast<AShooterHUD>(GetHUD());
+    if(ShooterHUD)
+    {
+        ShooterHUD->AddAnnouncement();
+    }
 
 }
 
@@ -261,12 +266,7 @@ void AShooterPlayerController::OnMatchStateSet(FName State)
 
     if(MatchState == MatchState::InProgress)
     {
-        ShooterHUD = ShooterHUD == nullptr ? Cast<AShooterHUD>(GetHUD()) : ShooterHUD;
-
-        if(ShooterHUD)
-        {
-            ShooterHUD->AddCharacterOverlay();
-        }
+        HandleMatchHasStarted();
     }
 }
 
@@ -274,12 +274,19 @@ void AShooterPlayerController::OnRep_MatchState()
 {
     if(MatchState == MatchState::InProgress)
     {
-        ShooterHUD = ShooterHUD == nullptr ? Cast<AShooterHUD>(GetHUD()) : ShooterHUD;
-
-        if(ShooterHUD)
-        {
-            ShooterHUD->AddCharacterOverlay();
-        }
+        HandleMatchHasStarted();
     }
 }
 
+void AShooterPlayerController::HandleMatchHasStarted() 
+{
+    ShooterHUD = ShooterHUD == nullptr ? Cast<AShooterHUD>(GetHUD()) : ShooterHUD;
+    if(ShooterHUD)
+    {
+        if(ShooterHUD->Announcement)
+        {
+            ShooterHUD->Announcement->SetVisibility(ESlateVisibility::Hidden);
+        }
+        ShooterHUD->AddCharacterOverlay();
+    }
+}
