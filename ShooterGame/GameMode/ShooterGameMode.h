@@ -51,4 +51,8 @@ private:
 
 	float CountdownTime = 0.f;
 
+public: 
+
+	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }
+
 };
