@@ -6,6 +6,11 @@
 #include "GameFramework/GameMode.h"
 #include "ShooterGameMode.generated.h"
 
+namespace MatchState
+{
+	extern SHOOTERGAME_API const FName Cooldown; // Match duration has been reached. Display winner and begin cooldown timer. 
+}
+
 /**
  * 
  */
@@ -29,6 +34,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float MatchTime = 120.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float CooldownTime = 15.f;
 
 	float LevelStartingTime = 0.f;
 

@@ -40,6 +40,8 @@ public:
 
 	void HandleMatchHasStarted();
 
+	void HandleCooldown();
+
 protected:
 
 	virtual void BeginPlay() override;
