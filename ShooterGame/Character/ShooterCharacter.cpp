@@ -83,6 +83,21 @@ void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	RotateInPlace(DeltaTime);
+
+	HideCharacterIfCameraClose();
+
+	PollInit();
+}
+
+void AShooterCharacter::RotateInPlace(float DeltaTime) 
+{
+	if(bDisableGameplay) 
+	{
+		bUseControllerRotationYaw = false;
+		TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+		return;
+	}
 	if(GetLocalRole() > ENetRole::ROLE_SimulatedProxy && IsLocallyControlled())
 	{
 		AimOffset(DeltaTime);
@@ -96,13 +111,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 		}
 		CalculateAO_Pitch();
 	}
-	
-
-	HideCharacterIfCameraClose();
-
-	PollInit();
 }
-
 void AShooterCharacter::Elim()
 {
 	MulticastElim();
@@ -116,6 +125,10 @@ void AShooterCharacter::Destroyed()
 	if(ElimBotComponent)
 	{
 		ElimBotComponent->DestroyComponent();
+	}
+	if (CombatComponent && CombatComponent->EquippedWeapon)
+	{
+		CombatComponent->EquippedWeapon->Destroy();
 	}
 }
 
@@ -148,10 +161,7 @@ void AShooterCharacter::MulticastElim_Implementation()
 	// Disable character movement
 	GetCharacterMovement()->DisableMovement();
 	GetCharacterMovement()->StopMovementImmediately();
-	if(ShooterPlayerController)
-	{
-		DisableInput(ShooterPlayerController);
-	}
+	bDisableGameplay = true;
 
 	// Disable Collision
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -206,6 +216,7 @@ void AShooterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &Ou
 
 	DOREPLIFETIME_CONDITION(AShooterCharacter, OverlappingWeapon, COND_OwnerOnly);
 	DOREPLIFETIME(AShooterCharacter, Health);
+	DOREPLIFETIME(AShooterCharacter, bDisableGameplay);
 
 }
 
@@ -344,6 +355,8 @@ void AShooterCharacter::RecieveDamage(AActor* DamagedActor, float Damage, const 
 
 void AShooterCharacter::MoveForward(float Value) 
 {
+	if(bDisableGameplay) return;
+
 	if(Controller != nullptr && Value != 0.f)
 	{
 		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
@@ -354,6 +367,8 @@ void AShooterCharacter::MoveForward(float Value)
 
 void AShooterCharacter::MoveRight(float Value) 
 {
+	if(bDisableGameplay) return;
+
 	if(Controller != nullptr && Value != 0.f)
 	{
 		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
@@ -374,6 +389,8 @@ void AShooterCharacter::LookUp(float Value)
 
 void AShooterCharacter::EquipButtonPressed() 
 {
+	if(bDisableGameplay) return;
+
 	if(CombatComponent)
 	{
 		if(HasAuthority())
@@ -398,6 +415,8 @@ void AShooterCharacter::ServerEquipButtonpressed_Implementation()
 
 void AShooterCharacter::ReloadButtonPressed() 
 {
+	if(bDisableGameplay) return;
+
 	if(CombatComponent)
 	{
 		CombatComponent->Reload();
@@ -406,7 +425,8 @@ void AShooterCharacter::ReloadButtonPressed()
 
 void AShooterCharacter::CrouchButtonPressed() 
 {
-	
+	if(bDisableGameplay) return;
+
 	if(bIsCrouched)
 	{
 		UnCrouch();
@@ -420,6 +440,8 @@ void AShooterCharacter::CrouchButtonPressed()
 
 void AShooterCharacter::AimButtonPressed() 
 {
+	if(bDisableGameplay) return;
+
 	if(CombatComponent)
 	{
 		CombatComponent->SetAiming(true);
@@ -521,6 +543,7 @@ void AShooterCharacter::SimProxyTurn()
 
 void AShooterCharacter::Jump() 
 {
+	if(bDisableGameplay) return;
 	
 	if(bIsCrouched)
 	{
@@ -535,6 +558,8 @@ void AShooterCharacter::Jump()
 
 void AShooterCharacter::FireButtonPressed() 
 {
+	if(bDisableGameplay) return;
+
 	if(CombatComponent)
 	{
 		CombatComponent->FireButtonPressed(true);
@@ -543,6 +568,8 @@ void AShooterCharacter::FireButtonPressed()
 
 void AShooterCharacter::FireButtonReleased() 
 {
+	if(bDisableGameplay) return;
+
 	if(CombatComponent)
 	{
 		CombatComponent->FireButtonPressed(false);
@@ -640,6 +667,7 @@ void AShooterCharacter::PollInit()
 		}
 	}
 }
+
 
 void AShooterCharacter::SetOverlappingWeapon(AWeapon* Weapon) 
 {

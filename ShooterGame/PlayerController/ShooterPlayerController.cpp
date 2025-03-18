@@ -11,6 +11,7 @@
 #include "Net/UnrealNetwork.h"
 #include "ShooterGame/GameMode/ShooterGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "ShooterGame/ShooterComponents/CombatComponent.h"
 
 
 void AShooterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const 
@@ -398,6 +399,12 @@ void AShooterPlayerController::HandleCooldown()
             ShooterHUD->Announcement->InfoText->SetText(FText());
 
         }
+    }
+    AShooterCharacter* ShooterCharacter = Cast<AShooterCharacter>(GetPawn());
+    if(ShooterCharacter && ShooterCharacter->GetCombatComponent())
+    {
+        ShooterCharacter->bDisableGameplay = true;
+        ShooterCharacter->GetCombatComponent()->FireButtonPressed(false);
     }
 
     
