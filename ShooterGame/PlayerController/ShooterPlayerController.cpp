@@ -12,6 +12,8 @@
 #include "ShooterGame/GameMode/ShooterGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShooterGame/ShooterComponents/CombatComponent.h"
+#include "ShooterGame/GameState/ShooterGameState.h"
+#include "ShooterGame/PlayerState/ShooterPlayerState.h"
 
 
 void AShooterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const 
@@ -396,7 +398,41 @@ void AShooterPlayerController::HandleCooldown()
             ShooterHUD->Announcement->SetVisibility(ESlateVisibility::Visible);
             FString AnnouncementText("New Match Starts In:");
             ShooterHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnouncementText));
-            ShooterHUD->Announcement->InfoText->SetText(FText());
+            
+            AShooterGameState* ShooterGameState = Cast<AShooterGameState>(UGameplayStatics::GetGameState(this));
+            AShooterPlayerState* ShooterPlayerState = GetPlayerState<AShooterPlayerState>();
+
+
+            if(ShooterGameState && ShooterPlayerState)
+            {
+                TArray<AShooterPlayerState*> TopPlayers = ShooterGameState->TopScoringPlayers;
+                FString InfoTextString;
+
+                if(TopPlayers.Num() == 0)
+                {
+                    InfoTextString = FString("Nobody Wins -_-");
+                }
+                else if(TopPlayers.Num() == 1 && TopPlayers[0] == ShooterPlayerState)
+                {
+                    InfoTextString = FString("You Are The Winner!");
+                }
+                else if (TopPlayers.Num() == 1)
+                {
+                    InfoTextString = FString::Printf(TEXT("Winner: \n%s"), *TopPlayers[0]->GetPlayerName());
+                }
+                else if (TopPlayers.Num() > 1)
+                {
+                    InfoTextString = FString("Players Tied For The Win:\n");
+                    for (auto TiedPlayer : TopPlayers)
+                    {
+                        InfoTextString.Append(FString::Printf(TEXT("%s\n"), *TiedPlayer->GetPlayerName()));
+                    }
+                }
+
+                ShooterHUD->Announcement->InfoText->SetText(FText::FromString(InfoTextString));
+            }
+
+            
 
         }
     }
@@ -406,7 +442,4 @@ void AShooterPlayerController::HandleCooldown()
         ShooterCharacter->bDisableGameplay = true;
         ShooterCharacter->GetCombatComponent()->FireButtonPressed(false);
     }
-
-    
-
 }
