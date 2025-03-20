@@ -242,6 +242,14 @@ void AShooterPlayerController::SetHUDMatchCountdown(float CountdownTime)
         int32 Seconds = CountdownTime - (Minutes * 60);
 
         FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+        if(Minutes == 0 && Seconds % 2 == 0 && Seconds <= 30)
+        {
+            ShooterHUD->CharacterOverlay->MatchCountdownText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
+        }
+        else 
+        {
+            ShooterHUD->CharacterOverlay->MatchCountdownText->SetColorAndOpacity(FSlateColor(FLinearColor::White));
+        }
         ShooterHUD->CharacterOverlay->MatchCountdownText->SetText(FText::FromString(CountdownText));
 
     }
