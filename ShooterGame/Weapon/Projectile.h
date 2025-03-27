@@ -33,7 +33,7 @@ protected:
 	UPROPERTY()
 	class USoundCue* ImpactSoundToPlay;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = DamageValues)
 	float Damage = 15.f;
 
 public:	
