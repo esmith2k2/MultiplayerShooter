@@ -25,7 +25,7 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* CollisionBox;
-	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,12 +38,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = DamageValues)
 	float Damage = 15.f;
-
+	
+	UPROPERTY(VisibleAnywhere)
+	class UProjectileMovementComponent* ProjectileMovementComponent;
 public:	
 
 
-	UPROPERTY(VisibleAnywhere)
-	class UProjectileMovementComponent* ProjectileMovementComponent;
+
 
 	UPROPERTY(EditAnywhere)
 	class UParticleSystem* Tracer;
