@@ -22,7 +22,10 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayImpactSound(class USoundCue* ImpactSoundTo);
-
+	
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* CollisionBox;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -37,9 +40,7 @@ protected:
 	float Damage = 15.f;
 
 public:	
-	
-	UPROPERTY(EditAnywhere)
-	class UBoxComponent* CollisionBox;
+
 
 	UPROPERTY(VisibleAnywhere)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
