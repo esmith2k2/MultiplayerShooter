@@ -37,19 +37,19 @@ public:
 
 
 	// Textures for Crosshairs
-	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Crosshairs")
 	class UTexture2D* CrosshairsCenter;
 
-	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Crosshairs")
 	class UTexture2D* CrosshairsLeft;
 
-	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Crosshairs")
 	class UTexture2D* CrosshairsRight;
 
-	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Crosshairs")
 	class UTexture2D* CrosshairsTop;
 
-	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Crosshairs")
 	class UTexture2D* CrosshairsBottom;
 
 
@@ -57,26 +57,26 @@ public:
 	 Zoomed FOV while aiming
 	*/
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Aiming")
 	float ZoomedFOV = 30.f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Aiming")
 	float ZoomInterpSpeed = 20.f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Aiming")
 	float UnZoomInterpSpeed = 20.f;
 	
 	/*
 	* Automatic Fire
 	*/
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Firing")
 	float FireDelay = .1f;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Firing")
 	bool bAutomatic = true;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Firing")
 	class USoundCue* EquipSound;
 
 
@@ -104,28 +104,28 @@ protected:
 	);
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category = "Default Weapon Parameters|Components")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category = "Default Weapon Parameters|Components")
 	class USphereComponent* AreaSphere;
 
-	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere, Category = "Default Weapon Parameters|Components")
 	EWeaponState WeaponState;
 
 	UFUNCTION()
 	void OnRep_WeaponState();
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(VisibleAnywhere, Category = "Default Weapon Parameters|Components")
 	class UWidgetComponent* PickupWidget;
 
-	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Firing")
 	class UAnimationAsset* FireAnimation;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Firing")
 	TSubclassOf<class ABulletCasing> BulletCasingClass;
 
-	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_Ammo)
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_Ammo, Category = "Default Weapon Parameters|Ammo")
 	int32 Ammo;
 
 	UFUNCTION()
@@ -133,7 +133,7 @@ private:
 
 	void SpendRound();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Ammo")
 	int32 MagCapacity;
 
 	UPROPERTY()
@@ -142,7 +142,7 @@ private:
 	UPROPERTY()
 	class AShooterPlayerController* ShooterOwnerController;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Ammo")
 	EWeaponType WeaponType;
 
 public:	
