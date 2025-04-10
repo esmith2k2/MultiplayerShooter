@@ -21,6 +21,7 @@ public:
 protected:
 
 
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")

@@ -9,8 +9,6 @@
 #include "ShooterGame/ShooterTypes/CombatState.h"
 #include "CombatComponent.generated.h"
 
-#define TRACE_LENGTH 100000.f
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTERGAME_API UCombatComponent : public UActorComponent
 {
@@ -147,17 +145,20 @@ private:
 
 	TMap<EWeaponType, int32> CarriedAmmoMap;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "StartingAmmo")
 	int32 StartingAssaultRifleAmmo = 30;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "StartingAmmo")
 	int32 StartingRocketAmmo = 1;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "StartingAmmo")
 	int32 StartingPistolAmmo = 45;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "StartingAmmo")
 	int32 StartingSMGAmmo = 90;
+
+	UPROPERTY(EditAnywhere, Category = "StartingAmmo")
+	int32 StartingShotgunAmmo = 18;
 
 	void InitializeCarriedAmmo();
 

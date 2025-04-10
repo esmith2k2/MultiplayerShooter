@@ -11,6 +11,10 @@
 #include "BulletCasing.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "ShooterGame/PlayerController/ShooterPlayerController.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "WeaponTypes.h"
+#include "DrawDebugHelpers.h"
+
 
 
 // Sets default values
@@ -259,4 +263,19 @@ void AWeapon::ShowPickupWidget(bool bShowWidget)
 bool AWeapon::IsEmpty() 
 {
 	return Ammo <= 0;
+}
+
+FVector AWeapon::TraceEndWithScatter(const FVector &TraceStart, const FVector &HitTarget) 
+{
+	FVector ToTargetNormalized = (HitTarget - TraceStart).GetSafeNormal();
+	FVector SphereCenter = TraceStart + ToTargetNormalized * DistanceToSphere;
+	FVector RandVec = UKismetMathLibrary::RandomUnitVector() * FMath::FRandRange(0.f, SphereRadius);
+	FVector EndLoc = SphereCenter + RandVec;
+	FVector ToEndLoc = EndLoc - TraceStart;
+
+	DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 20, FColor::Red, true);
+	DrawDebugSphere(GetWorld(), EndLoc, 4.f, 20, FColor::Blue, true);
+	DrawDebugLine(GetWorld(), TraceStart, FVector(TraceStart + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size()), FColor::Cyan, true);
+
+	return FVector(TraceStart + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size());
 }

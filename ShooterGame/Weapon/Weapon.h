@@ -103,6 +103,8 @@ protected:
 		int32 OtherBodyIndex
 	);
 
+	FVector TraceEndWithScatter(const FVector &TraceStart, const FVector &HitTarget);
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Default Weapon Parameters|Components")
 	USkeletalMeshComponent* WeaponMesh;
@@ -144,6 +146,19 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Ammo")
 	EWeaponType WeaponType;
+
+	/*
+	* Trace end with scatter
+	*/
+
+	UPROPERTY(EditAnywhere, Category = "Default WeaponParameters|Scatter")
+	float DistanceToSphere = 800.f;
+
+	UPROPERTY(EditAnywhere, Category = "Default WeaponParameters|Scatter")
+	float SphereRadius = 75.f;
+
+	UPROPERTY(EditAnywhere, Category = "Default WeaponParameters|Scatter")
+	bool bUseScatter = false;
 
 public:	
 	void SetWeaponState(EWeaponState State);
