@@ -20,30 +20,32 @@ public:
 
 protected:
 
+void WeaponTraceHit(const FVector &TraceStart, const FVector &HitTarget, FHitResult &OutHit);
 
+UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
+float Damage = 10.f;
+
+UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
+class UParticleSystem* ImpactParticles;
+
+UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
+class UParticleSystem* BeamParticles;
+
+UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
+class UParticleSystem* MuzzleFlash;
+
+UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
+class USoundCue* FireSound;
+
+UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
+class USoundCue* BodyHitSound;
+
+UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
+class USoundCue* EnvironmentHitSound;
 
 private:
 
-	UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
-	float Damage = 10.f;
 
-	UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
-	class UParticleSystem* ImpactParticles;
-
-	UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
-	class UParticleSystem* BeamParticles;
-
-	UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
-	class UParticleSystem* MuzzleFlash;
-
-	UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
-	class USoundCue* FireSound;
-
-	UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
-	class USoundCue* BodyHitSound;
-
-	UPROPERTY(EditAnywhere, Category = "HitScan Weapon Parameters")
-	class USoundCue* EnvironmentHitSound;
 	
 	
 };
