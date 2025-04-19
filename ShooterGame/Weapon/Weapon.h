@@ -83,13 +83,13 @@ public:
 	* Trace end with scatter
 	*/
 
-	UPROPERTY(EditAnywhere, Category = "Default WeaponParameters|Scatter")
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Scatter")
 	float DistanceToSphere = 800.f;
 
-	UPROPERTY(EditAnywhere, Category = "Default WeaponParameters|Scatter")
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Scatter")
 	float SphereRadius = 75.f;
 
-	UPROPERTY(EditAnywhere, Category = "Default WeaponParameters|Scatter")
+	UPROPERTY(EditAnywhere, Category = "Default Weapon Parameters|Scatter")
 	bool bUseScatter = false;
 
 
@@ -126,7 +126,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Default Weapon Parameters|Components")
 	class USphereComponent* AreaSphere;
 
-	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere, Category = "Default Weapon Parameters|Components")
+	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere)
 	EWeaponState WeaponState;
 
 	UFUNCTION()
