@@ -26,25 +26,6 @@ protected:
 
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 
-	void DestroyTimerFinished();
-
-	UPROPERTY(EditAnywhere, Category = DamageValues)
-	float InnerExplosionRadius = 200.f;
-
-	UPROPERTY(EditAnywhere, Category = DamageValues)
-	float OutterExplosionRadius = 600.f;
-
-	UPROPERTY(EditAnywhere, Category = DamageValues)
-	float MinimumDamage = 20.f;
-
-	UPROPERTY(EditAnywhere, Category = DamageValues)
-	float FalloffCurveExponent= 1.f;
-
-	UPROPERTY(EditAnywhere)
-	class UNiagaraSystem* TrailSystem;
-
-	UPROPERTY()
-	class UNiagaraComponent* TrailSystemComponent;
 
 	UPROPERTY(EditAnywhere)
 	USoundCue* ProjectileLoop;
@@ -60,12 +41,6 @@ protected:
 
 private:
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* RocketMesh;
 
-	FTimerHandle DestroyTimer;
-
-	UPROPERTY(EditAnywhere)
-	float DestroyTime = 3.f;
 	
 };
