@@ -67,7 +67,7 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
     Lean = FMath::Clamp(Interp, -30.f, 30.f);
     
     AO_Yaw = ShooterCharacter->GetAO_Yaw();
-    AO_Pitch = ShooterCharacter->GEtAO_Pitch();
+    AO_Pitch = ShooterCharacter->GetAO_Pitch();
 
     if(bWeaponEquipped && EquippedWeapon && EquippedWeapon->GetWeaponMesh() && ShooterCharacter->GetMesh())
     {
@@ -92,9 +92,13 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
     bUseFABRIK = ShooterCharacter->GetCombatState() != ECombatState::ECS_Reloading;
 
-    bUseAimOffsets = ShooterCharacter->GetCombatState() != ECombatState::ECS_Reloading != ShooterCharacter->GetDisableGameplay();
+    bUseAimOffsets =
+        ShooterCharacter->GetCombatState() != ECombatState::ECS_Reloading &&
+        !ShooterCharacter->GetDisableGameplay();
 
-    bTransformRightHand = ShooterCharacter->GetCombatState() != ECombatState::ECS_Reloading != ShooterCharacter->GetDisableGameplay();
+    bTransformRightHand =
+        ShooterCharacter->GetCombatState() != ECombatState::ECS_Reloading &&
+        !ShooterCharacter->GetDisableGameplay();
    
     
 }
